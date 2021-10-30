@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Transport extends Model
 {
     use HasFactory;
+    protected $fillable =['caravan_id', 'type', 'company', 'qty', 'price'];
 }

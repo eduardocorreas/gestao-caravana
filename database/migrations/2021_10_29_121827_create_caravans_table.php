@@ -17,6 +17,7 @@ class CreateCaravansTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('year');
+            $table->string('billing_target');
             $table->timestamps();
         });
     }

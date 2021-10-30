@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Caravan extends Model
+class CaravanMemberPayment extends Model
 {
     use HasFactory;
-    protected $fillable =['name', 'year', 'billing_target'];
+    protected $fillable =['caravan_id', 'caravan_member_id', 'price'];
 }
