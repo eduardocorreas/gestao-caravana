@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class CaravanMember extends Model
 {
     use HasFactory;
-    protected $fillable =['caravan_id', 'user_id', 'type'];
+    protected $fillable =['caravan_id', 'name','email','phone', 'type'];
 }
