@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Caravan extends Model
 {
     use HasFactory;
-    protected $fillable =['name', 'year', 'initial_value', 'billing_target'];
+    protected $fillable =['name', 'year', 'initial_value', 'billing_target',
+    'slug', 'ticket_price'];
 }

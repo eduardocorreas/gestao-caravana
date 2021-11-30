@@ -19,7 +19,7 @@ class CreateCaravanMembersTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone');
-            $table->enum('type',['pilgrim', 'admin']);
+            $table->enum('type',['peregrino', 'admin']);
             $table->timestamps();
         });
     }

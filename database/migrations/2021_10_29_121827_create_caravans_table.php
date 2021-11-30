@@ -18,7 +18,9 @@ class CreateCaravansTable extends Migration
             $table->string('name');
             $table->string('year');
             $table->string('initial_value');
+            $table->string('ticket_price');
             $table->string('billing_target');
+            $table->string('slug');
             $table->timestamps();
         });
     }
