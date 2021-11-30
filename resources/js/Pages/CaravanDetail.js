@@ -1,11 +1,39 @@
 import React, { useState, useEffect } from "react";
 import Authenticated from "@/Layouts/Authenticated";
 import axios from "axios";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    BarElement,
+    RadialLinearScale,
+    ArcElement,
+} from "chart.js";
 import { Head } from "@inertiajs/inertia-react";
 import { NotificationManager } from "react-notifications";
 import NumberFormat from "react-number-format";
 import { formatCurrency } from "../Utils/mask";
 
+import { Bar, Doughnut } from "react-chartjs-2";
+import faker from "faker";
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    RadialLinearScale,
+    ArcElement,
+    Tooltip,
+    Legend,
+    BarElement
+);
 export default function CaravanDetail(props) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
@@ -86,6 +114,62 @@ export default function CaravanDetail(props) {
             });
     }
 
+    const labels = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+    ];
+
+    const data = {
+        labels,
+        datasets: [
+            {
+                label: "Dataset 1",
+                data: labels.map(() =>
+                    faker.datatype.number({ min: 0, max: 1000 })
+                ),
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+            {
+                label: "Dataset 2",
+                data: labels.map(() =>
+                    faker.datatype.number({ min: 0, max: 1000 })
+                ),
+                backgroundColor: "rgba(53, 162, 235, 0.5)",
+            },
+        ],
+    };
+    const dataDoughnut = {
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        datasets: [
+            {
+                label: "# of Votes",
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                    "rgba(255, 99, 132, 0.6)",
+                    "rgba(54, 162, 235, 0.6)",
+                    "rgba(255, 206, 86, 0.6)",
+                    "rgba(75, 192, 192, 0.6)",
+                    "rgba(153, 102, 255, 0.6)",
+                    "rgba(255, 159, 64, 0.6)",
+                ],
+                borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                    "rgba(255, 159, 64, 1)",
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
+
     return (
         <Authenticated
             auth={props.auth}
@@ -161,6 +245,31 @@ export default function CaravanDetail(props) {
                                             </p>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1  md:grid-cols-2 gap-3 mb-5">
+                                <div class="bg-white p-3 rounded-xl shadow-xl flex items-center justify-between mt-4">
+                                    <Bar
+                                        options={{
+                                            responsive: true,
+                                            plugins: {
+                                                legend: {
+                                                    position: "top",
+                                                },
+                                                title: {
+                                                    display: true,
+                                                    text: "Entrada x Saída (Últimos 6 meses)",
+                                                },
+                                            },
+                                        }}
+                                        data={data}
+                                    />
+                                </div>
+                                <div class="bg-white p-3 rounded-xl shadow-xl flex items-center justify-between mt-4">
+                                    <Doughnut
+                                        title="Custos por categoria"
+                                        data={dataDoughnut}
+                                    />
                                 </div>
                             </div>
                             {/* INSCRITOS */}
