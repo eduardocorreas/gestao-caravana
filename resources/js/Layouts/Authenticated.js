@@ -27,7 +27,7 @@ export default function Authenticated({ auth, header, children }) {
                                     href={route("dashboard")}
                                     active={route().current("dashboard")}
                                 >
-                                    Dashboard
+                                    Todas as caravanas
                                 </NavLink>
                             </div>
                         </div>
@@ -65,7 +65,7 @@ export default function Authenticated({ auth, header, children }) {
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            Sair
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
@@ -126,7 +126,7 @@ export default function Authenticated({ auth, header, children }) {
                             href={route("dashboard")}
                             active={route().current("dashboard")}
                         >
-                            Dashboard
+                            Todas as caravanas
                         </ResponsiveNavLink>
                     </div>
 
@@ -146,7 +146,7 @@ export default function Authenticated({ auth, header, children }) {
                                 href={route("logout")}
                                 as="button"
                             >
-                                Log Out
+                                Sair
                             </ResponsiveNavLink>
                         </div>
                     </div>

@@ -9,6 +9,8 @@ use App\Models\Caravan;
 use App\Models\CaravanMember;
 use App\Models\CaravanMemberPayment;
 use App\Models\Cost;
+use App\Models\ExtraValue;
+use DB;
 
 use Illuminate\Http\Request;
 
@@ -22,17 +24,78 @@ class CaravanController extends Controller
     public function show(Request $request){
         try {
             $caravan = Caravan::where('slug', $request->slug)->first();
-            $members = CaravanMember::where('caravan_id', $caravan->id)->get();
+            $members = CaravanMember::where('caravan_id', $caravan->id)->limit(3)->get();
 
             $totalPayments = CaravanMemberPayment::where('caravan_id', $caravan->id)->sum('price');
-            $totalValue = $totalPayments + $caravan->initial_value;
-
-            $costs = Cost::where('caravan_id', $caravan->id)->get();
+            $totalExtraValues = ExtraValue::where('caravan_id',$caravan->id)->sum('price');
             $totalCosts = Cost::where('caravan_id', $caravan->id)->sum('price');
+
+            $totalValue = $totalPayments + $caravan->initial_value + $totalExtraValues;
+
+            $costs = Cost::where('caravan_id',$caravan->id)->limit(3)->get();
+            $extraValues = ExtraValue::where('caravan_id',$caravan->id)->limit(3)->get();
+
+            $totalGroupedCosts = DB::select('SELECT type, COUNT(id) AS qty, SUM(price) as total from costs GROUP BY type');
+            $costLabels = [];
+            $costValues = [];
+
+            foreach ($totalGroupedCosts as $total) {
+                array_push($costLabels, $total->type);
+                array_push($costValues, $total->total);
+            }
+
+            $totalGroupedExtraValues = DB::select('SELECT type, COUNT(id) AS qty, SUM(price) as total from extra_values GROUP BY type');
+            $extraValuesLabels = [];
+            $extraValuesValues = [];
+
+            foreach ($totalGroupedExtraValues as $total) {
+                array_push($extraValuesLabels, $total->type);
+                array_push($extraValuesValues, $total->total);
+            }
+
 
             return Inertia::render('CaravanDetail',['caravan'=>$caravan, 'members'=> $members,
             'totalValue'=>$totalValue, 'totalPayments'=>$totalPayments,
-            'costs'=> $costs, 'totalCosts'=> $totalCosts]);
+            'costs'=> $costs, 'totalCosts'=> $totalCosts, 'costLabels'=> $costLabels,
+            'costValues'=> $costValues, 'extraValues'=>$extraValues,
+            'extraValuesLabels'=> $extraValuesLabels,
+            'extraValuesValues'=> $extraValuesValues]);
+
+        } catch (\Throwable $th) {
+            return redirect('/dashboard');
+        }
+    }
+
+    public function allMembers(Request $request){
+        try {
+            $caravan = Caravan::where('slug', $request->slug)->first();
+            $members = CaravanMember::where('caravan_id', $caravan->id)->get();
+
+            return Inertia::render('CaravanMembers',['caravan'=>$caravan, 'members'=> $members]);
+
+        } catch (\Throwable $th) {
+            return redirect('/dashboard');
+        }
+    }
+
+    public function allCosts(Request $request){
+        try {
+            $caravan = Caravan::where('slug', $request->slug)->first();
+            $costs = Cost::where('caravan_id',$caravan->id)->get();
+
+            return Inertia::render('CaravanCosts',['caravan'=>$caravan, 'costs'=> $costs]);
+
+        } catch (\Throwable $th) {
+            return redirect('/dashboard');
+        }
+    }
+
+    public function allExtraValues(Request $request){
+        try {
+            $caravan = Caravan::where('slug', $request->slug)->first();
+            $extraValues = ExtraValue::where('caravan_id',$caravan->id)->get();
+
+            return Inertia::render('CaravanExtraValue',['caravan'=>$caravan, 'extraValues'=> $extraValues]);
 
         } catch (\Throwable $th) {
             return redirect('/dashboard');

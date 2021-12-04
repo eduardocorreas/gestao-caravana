@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Authenticated from "@/Layouts/Authenticated";
 import axios from "axios";
 import {
@@ -20,7 +20,6 @@ import NumberFormat from "react-number-format";
 import { formatCurrency } from "../Utils/mask";
 
 import { Bar, Doughnut } from "react-chartjs-2";
-import faker from "faker";
 
 ChartJS.register(
     CategoryScale,
@@ -34,6 +33,8 @@ ChartJS.register(
     Legend,
     BarElement
 );
+import { months } from "@/Utils/date";
+
 export default function CaravanDetail(props) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
@@ -114,41 +115,39 @@ export default function CaravanDetail(props) {
             });
     }
 
-    const labels = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-    ];
-
-    const data = {
-        labels,
+    const dataDoughnut = {
+        labels: props.costLabels,
         datasets: [
             {
-                label: "Dataset 1",
-                data: labels.map(() =>
-                    faker.datatype.number({ min: 0, max: 1000 })
-                ),
-                backgroundColor: "rgba(255, 99, 132, 0.5)",
-            },
-            {
-                label: "Dataset 2",
-                data: labels.map(() =>
-                    faker.datatype.number({ min: 0, max: 1000 })
-                ),
-                backgroundColor: "rgba(53, 162, 235, 0.5)",
+                label: "# por custo",
+                data: props.costValues,
+                backgroundColor: [
+                    "rgba(255, 99, 132, 0.6)",
+                    "rgba(54, 162, 235, 0.6)",
+                    "rgba(255, 206, 86, 0.6)",
+                    "rgba(75, 192, 192, 0.6)",
+                    "rgba(153, 102, 255, 0.6)",
+                    "rgba(255, 159, 64, 0.6)",
+                ],
+                borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                    "rgba(255, 159, 64, 1)",
+                ],
+                borderWidth: 1,
             },
         ],
     };
-    const dataDoughnut = {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+
+    const dataDoughnutExtraValues = {
+        labels: props.extraValuesLabels,
         datasets: [
             {
-                label: "# of Votes",
-                data: [12, 19, 3, 5, 2, 3],
+                label: "# por valor",
+                data: props.extraValuesValues,
                 backgroundColor: [
                     "rgba(255, 99, 132, 0.6)",
                     "rgba(54, 162, 235, 0.6)",
@@ -186,6 +185,23 @@ export default function CaravanDetail(props) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 bg-white border-b border-gray-200">
+                            <nav class="bg-grey-light rounded font-sans w-full mb-5">
+                                <ol class="list-reset flex text-grey-dark">
+                                    <li>
+                                        <a href="/" class="font-bold">
+                                            Todas as caravanas
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <span class="mx-2">/</span>
+                                    </li>
+                                    <li>
+                                        {props.caravan.name +
+                                            " " +
+                                            props.caravan.year}
+                                    </li>
+                                </ol>
+                            </nav>
                             <div class="grid grid-cols-1  md:grid-cols-4 gap-3 mb-5">
                                 <div class="bg-white p-3 rounded-xl shadow-xl flex items-center justify-between mt-4">
                                     <div class="flex space-x-6 items-center justify-content-between">
@@ -249,26 +265,17 @@ export default function CaravanDetail(props) {
                             </div>
                             <div class="grid grid-cols-1  md:grid-cols-2 gap-3 mb-5">
                                 <div class="bg-white p-3 rounded-xl shadow-xl flex items-center justify-between mt-4">
-                                    <Bar
-                                        options={{
-                                            responsive: true,
-                                            plugins: {
-                                                legend: {
-                                                    position: "top",
-                                                },
-                                                title: {
-                                                    display: true,
-                                                    text: "Entrada x Saída (Últimos 6 meses)",
-                                                },
-                                            },
-                                        }}
-                                        data={data}
+                                    <Doughnut
+                                        title="Valor extra por categoria"
+                                        data={dataDoughnutExtraValues}
+                                        style={{ height: 200 }}
                                     />
                                 </div>
                                 <div class="bg-white p-3 rounded-xl shadow-xl flex items-center justify-between mt-4">
                                     <Doughnut
                                         title="Custos por categoria"
                                         data={dataDoughnut}
+                                        style={{ height: 200 }}
                                     />
                                 </div>
                             </div>
@@ -276,130 +283,9 @@ export default function CaravanDetail(props) {
                             <div>
                                 <div class="flex justify-between align-items-center mt-10 mb-3">
                                     <h2 class="text-xl font-bold uppercase">
-                                        Inscritos
+                                        Últimos Inscritos
                                     </h2>
-                                    {showForm ? (
-                                        <button
-                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                            type="button"
-                                            onClick={() =>
-                                                setShowForm(!showForm)
-                                            }
-                                        >
-                                            <i className="fa fa-times"></i>
-                                        </button>
-                                    ) : (
-                                        <button
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                            type="button"
-                                            onClick={() =>
-                                                setShowForm(!showForm)
-                                            }
-                                        >
-                                            <i class="fa fa-plus text-white"></i>{" "}
-                                            Nova inscrição
-                                        </button>
-                                    )}
                                 </div>
-                                <form
-                                    class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                                    style={{
-                                        display: showForm ? "block" : "none",
-                                    }}
-                                >
-                                    <div class="flex flex-wrap -mx-3 mb-6">
-                                        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                                            <label
-                                                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                                for="grid-first-name"
-                                            >
-                                                Nome
-                                            </label>
-                                            <input
-                                                class="appearance-none block bg-gray-200 text-gray-700 border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                                                id="grid-first-name"
-                                                type="text"
-                                                onChange={(e) =>
-                                                    setName(e.target.value)
-                                                }
-                                                value={name}
-                                            />
-                                            {/* <p class="text-red-500 text-xs italic">
-                                            Please fill out this field.
-                                        </p> */}
-                                        </div>
-                                        <div class="w-full md:w-1/4 px-3">
-                                            <label
-                                                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                                for="grid-last-name"
-                                            >
-                                                Telefone
-                                            </label>
-                                            <NumberFormat
-                                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                                id="grid-last-name"
-                                                type="text"
-                                                value={phone}
-                                                onValueChange={(values) =>
-                                                    setPhone(
-                                                        values.formattedValue
-                                                    )
-                                                }
-                                                format="(##) #####-####"
-                                                mask="_"
-                                            />
-                                        </div>
-                                        <div class="w-full md:w-1/4 px-3">
-                                            <label
-                                                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                                for="grid-last-name"
-                                            >
-                                                E-mail
-                                            </label>
-                                            <input
-                                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                                id="grid-last-name"
-                                                type="text"
-                                                onChange={(e) =>
-                                                    setEmail(e.target.value)
-                                                }
-                                                value={email}
-                                            />
-                                        </div>
-                                        <div class="w-full md:w-1/4 px-3">
-                                            <label
-                                                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                                for="grid-last-name"
-                                            >
-                                                Tipo
-                                            </label>
-                                            <select
-                                                class="block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                                onChange={(e) =>
-                                                    setType(e.target.value)
-                                                }
-                                                value={type}
-                                            >
-                                                <option value="pilgrim">
-                                                    Peregrino
-                                                </option>
-                                                <option value="admin">
-                                                    Admin
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="flex justify-end align-items-end">
-                                        <button
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                            type="button"
-                                            onClick={() => storeMember()}
-                                        >
-                                            Cadastrar
-                                        </button>
-                                    </div>
-                                </form>
-
                                 <table class="items-center bg-transparent w-full border-collapse ">
                                     <thead>
                                         <tr>
@@ -446,205 +332,180 @@ export default function CaravanDetail(props) {
                                             ))}
                                     </tbody>
                                 </table>
-                            </div>
-
-                            {/* CUSTOS */}
-                            <div>
-                                <div class="flex justify-between align-items-center mt-10 mb-3">
-                                    <h2 class="text-xl font-bold uppercase">
-                                        Custos
-                                    </h2>
-                                    {showFormCosts ? (
-                                        <button
-                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                            type="button"
-                                            onClick={() =>
-                                                setShowFormCosts(!showFormCosts)
-                                            }
-                                        >
-                                            <i className="fa fa-times"></i>
-                                        </button>
-                                    ) : (
-                                        <button
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                            type="button"
-                                            onClick={() =>
-                                                setShowFormCosts(!showFormCosts)
-                                            }
-                                        >
-                                            <i class="fa fa-plus text-white"></i>{" "}
-                                            Novo custo
-                                        </button>
-                                    )}
+                                <div class="mt-3 mb-5 text-right">
+                                    <button
+                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                        type="button"
+                                        onClick={() =>
+                                            window.location.replace(
+                                                "/caravana/membro/" +
+                                                    props.caravan.slug
+                                            )
+                                        }
+                                    >
+                                        <i class="fa fa-eye text-white"></i> Ver
+                                        todos
+                                    </button>
                                 </div>
-                                <form
-                                    class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                                    style={{
-                                        display: showFormCosts
-                                            ? "block"
-                                            : "none",
-                                    }}
-                                >
-                                    <div class="flex flex-wrap -mx-3 mb-6">
-                                        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-                                            <label
-                                                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                                for="grid-first-name"
-                                            >
-                                                Descrição
-                                            </label>
-                                            <input
-                                                class="appearance-none block bg-gray-200 text-gray-700 border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                                                id="grid-first-name"
-                                                type="text"
-                                                onChange={(e) =>
-                                                    setDescription(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                value={description}
-                                            />
-                                        </div>
-                                        <div class="w-full md:w-1/4 px-3">
-                                            <label
-                                                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                                for="grid-last-name"
-                                            >
-                                                Valor
-                                            </label>
-                                            <NumberFormat
-                                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                                id="grid-last-name"
-                                                type="text"
-                                                onValueChange={(values) => {
-                                                    setPrice(values.floatValue);
-                                                }}
-                                                value={price}
-                                                thousandSeparator={"."}
-                                                prefix={"R$ "}
-                                                decimalSeparator=","
-                                            />
-                                        </div>
-                                        <div class="w-full md:w-1/4 px-3">
-                                            <label
-                                                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                                for="grid-last-name"
-                                            >
-                                                Observação
-                                            </label>
-                                            <input
-                                                class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                                id="grid-last-name"
-                                                type="text"
-                                                onChange={(e) =>
-                                                    setNotes(e.target.value)
-                                                }
-                                                value={notes}
-                                            />
-                                        </div>
-                                        <div class="w-full md:w-1/4 px-3">
-                                            <label
-                                                class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                                for="grid-last-name"
-                                            >
-                                                Tipo
-                                            </label>
-                                            <select
-                                                class="block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                                onChange={(e) =>
-                                                    setTypeCost(e.target.value)
-                                                }
-                                                value={typeCost}
-                                            >
-                                                <option value="alimentacao">
-                                                    Alimentação
-                                                </option>
-                                                <option value="guia">
-                                                    Guia Turístico
-                                                </option>
-                                                <option value="hospedagem">
-                                                    Hospedagem
-                                                </option>
-                                                <option value="medicamentos">
-                                                    Medicamentos
-                                                </option>
-                                                <option value="passeio">
-                                                    Passeios
-                                                </option>
-                                                <option value="transporte">
-                                                    Transporte
-                                                </option>
-                                                <option value="outros">
-                                                    Outros
-                                                </option>
-                                            </select>
-                                        </div>
+                            </div>
+                            <hr />
+                            <div class="grid grid-cols-1  md:grid-cols-2 gap-3 mb-5">
+                                {/* CUSTOS */}
+                                <div>
+                                    <div class="flex justify-between align-items-center mt-10 mb-3">
+                                        <h2 class="text-xl font-bold uppercase">
+                                            Últimos custos
+                                        </h2>
                                     </div>
-                                    <div class="flex justify-end align-items-end">
+
+                                    <table class="items-center bg-transparent w-full border-collapse ">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                                    Descrição
+                                                </th>
+                                                <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                                    Valor
+                                                </th>
+                                                <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                                    Anotações
+                                                </th>
+                                                <th class="text-right  px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                                    Opções
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {props.costs &&
+                                                props.costs.map((cost) => (
+                                                    <tr
+                                                        class="border text-left px-8 py-4"
+                                                        key={cost.id}
+                                                    >
+                                                        <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
+                                                            <b>
+                                                                {
+                                                                    cost.description
+                                                                }
+                                                            </b>
+                                                        </td>
+                                                        <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
+                                                            {formatCurrency(
+                                                                cost.price
+                                                            )}
+                                                        </td>
+                                                        <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
+                                                            {cost.notes}
+                                                        </td>
+                                                        <td class="text-right  border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
+                                                            <button
+                                                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                                                onClick={() =>
+                                                                    deleteCost(
+                                                                        cost.id
+                                                                    )
+                                                                }
+                                                            >
+                                                                <i class="fa fa-trash text-white"></i>{" "}
+                                                                Excluir
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                        </tbody>
+                                    </table>
+                                    <div class="mt-3 text-right">
                                         <button
                                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                             type="button"
-                                            onClick={() => storeCost()}
+                                            onClick={() =>
+                                                window.location.replace(
+                                                    "/caravana/custo/" +
+                                                        props.caravan.slug
+                                                )
+                                            }
                                         >
-                                            Cadastrar
+                                            <i class="fa fa-eye text-white"></i>{" "}
+                                            Ver todos
                                         </button>
                                     </div>
-                                </form>
+                                </div>
+                                {/* VALOR EXTRA */}
+                                <div>
+                                    <div class="flex justify-between align-items-center mt-10 mb-3">
+                                        <h2 class="text-xl font-bold uppercase">
+                                            Valor extra
+                                        </h2>
+                                    </div>
 
-                                <table class="items-center bg-transparent w-full border-collapse ">
-                                    <thead>
-                                        <tr>
-                                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                                Descrição
-                                            </th>
-                                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                                Valor
-                                            </th>
-                                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                                Anotações
-                                            </th>
-                                            <th class="text-right  px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                                Opções
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {props.costs &&
-                                            props.costs.map((cost) => (
-                                                <tr
-                                                    class="border text-left px-8 py-4"
-                                                    key={cost.id}
-                                                >
-                                                    <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
-                                                        <b>
-                                                            {cost.description}
-                                                        </b>
-                                                    </td>
-                                                    <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
-                                                        {formatCurrency(
-                                                            cost.price
-                                                        )}
-                                                    </td>
-                                                    <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
-                                                        {cost.notes}
-                                                    </td>
-                                                    <td class="text-right  border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
-                                                        <button
-                                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                                            onClick={() =>
-                                                                deleteCost(
-                                                                    cost.id
-                                                                )
-                                                            }
+                                    <table class="items-center bg-transparent w-full border-collapse ">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                                    Descrição
+                                                </th>
+                                                <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                                    Valor
+                                                </th>
+                                                <th class="text-right  px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                                    Opções
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {props.extraValues &&
+                                                props.extraValues.map(
+                                                    (extraValue) => (
+                                                        <tr
+                                                            class="border text-left px-8 py-4"
+                                                            key={extraValue.id}
                                                         >
-                                                            <i class="fa fa-trash text-white"></i>{" "}
-                                                            Excluir
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                    </tbody>
-                                </table>
+                                                            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
+                                                                <b>
+                                                                    {
+                                                                        extraValue.description
+                                                                    }
+                                                                </b>
+                                                            </td>
+                                                            <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
+                                                                {formatCurrency(
+                                                                    extraValue.price
+                                                                )}
+                                                            </td>
+                                                            <td class="text-right  border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
+                                                                <button
+                                                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                                                    onClick={() =>
+                                                                        deleteExtraValue(
+                                                                            extraValue.id
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <i class="fa fa-trash text-white"></i>{" "}
+                                                                    Excluir
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                )}
+                                        </tbody>
+                                    </table>
+                                    <div class="mt-3 text-right">
+                                        <button
+                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                            type="button"
+                                            onClick={() =>
+                                                window.location.replace(
+                                                    "/caravana/valor-extra/" +
+                                                        props.caravan.slug
+                                                )
+                                            }
+                                        >
+                                            <i class="fa fa-eye text-white"></i>{" "}
+                                            Ver todos
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
