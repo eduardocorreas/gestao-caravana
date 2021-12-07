@@ -5345,7 +5345,7 @@ function CaravanDetail(props) {
                   "class": "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
                   type: "button",
                   onClick: function onClick() {
-                    return window.location.replace("/caravana/membro/" + props.caravan.slug);
+                    return window.location.replace("/caravana/membros/" + props.caravan.slug);
                   },
                   children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("i", {
                     "class": "fa fa-eye text-white"
@@ -5415,7 +5415,7 @@ function CaravanDetail(props) {
                     "class": "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
                     type: "button",
                     onClick: function onClick() {
-                      return window.location.replace("/caravana/custo/" + props.caravan.slug);
+                      return window.location.replace("/caravana/custos/" + props.caravan.slug);
                     },
                     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("i", {
                       "class": "fa fa-eye text-white"

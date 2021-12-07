@@ -338,7 +338,7 @@ export default function CaravanDetail(props) {
                                         type="button"
                                         onClick={() =>
                                             window.location.replace(
-                                                "/caravana/membro/" +
+                                                "/caravana/membros/" +
                                                     props.caravan.slug
                                             )
                                         }
@@ -420,7 +420,7 @@ export default function CaravanDetail(props) {
                                             type="button"
                                             onClick={() =>
                                                 window.location.replace(
-                                                    "/caravana/custo/" +
+                                                    "/caravana/custos/" +
                                                         props.caravan.slug
                                                 )
                                             }
