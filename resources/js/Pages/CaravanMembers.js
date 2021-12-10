@@ -13,29 +13,21 @@ export default function CaravanMembers(props) {
     const [showForm, setShowForm] = useState(false);
 
     async function storeMember() {
-        if (!name || !phone || !email || !type) {
-            NotificationManager.error(
-                "Todos os campos são obrigatórios",
-                "Ação necessária!",
-                5000
-            );
-        } else {
-            await axios
-                .post("/caravana/membro", {
-                    caravan_id: props.caravan.id,
-                    name,
-                    phone,
-                    email,
-                    type,
-                })
-                .then((res) => {
-                    window.location.reload();
-                    NotificationManager.success(res.data, "Sucesso", 5000);
-                })
-                .catch((err) => {
-                    NotificationManager.error(err, "Erro!", 5000);
-                });
-        }
+        await axios
+            .post("/caravana/membro", {
+                caravan_id: props.caravan.id,
+                name,
+                phone,
+                email,
+                type,
+            })
+            .then((res) => {
+                window.location.reload();
+                NotificationManager.success(res.data, "Sucesso", 5000);
+            })
+            .catch((err) => {
+                NotificationManager.error(err, "Erro!", 5000);
+            });
     }
 
     return (
